@@ -1,49 +1,81 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import axios from 'axios'
+let API_URL = `https://rickandmortyapi.com/api/character`
+export default {
+  data() {
+    return {
+      info: [],
+      personajes: [],
+      cont:2
+    }
+  },
+  mounted() {
+    axios.get(API_URL)
+      .then((response) => {
+        this.info = response.data.info;
+        this.personajes = response.data.results;
+      })
+  },
+  methods: {
+    pag(num) {
+      API_URL='https://rickandmortyapi.com/api/character/?page='+num
+      console.log(API_URL)
+      axios.get(API_URL)
+      .then((response) => {
+        console.log(response.config)
+        this.info = response.data.info;
+        this.personajes = response.data.results;
+
+      })
+      this.cont++
+    }
+  },
+}
 </script>
 
 <template>
-  <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
-  <div class="flex items-center flex-shrink-0 text-white mr-6">
-    <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
-    <span class="font-semibold text-xl tracking-tight">Tailwind CSS</span>
-  </div>
-  <div class="block lg:hidden">
-    <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
-      <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
-    </button>
-  </div>
-  <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-    <div class="text-sm lg:flex-grow">
-      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
-        Docs
-      </a>
-      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
-        Examples
-      </a>
-      <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
-        Blog
-      </a>
-    </div>
-    <div>
-      <a href="#" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Download</a>
-    </div>
-  </div>
-</nav>
-Tabs
-</template>
+    <h1 class="text-2xl font-bold mt-10 mb-5"> Rick & Morty</h1>
+    <h2 class="text-2xl font-bold mt-10 mb-5">Hay {{ info.count }} personajes en el programa</h2>
+    
+    <br>
+    <br>
+    <button @click="pag(cont)">página {{ cont-1 }}</button>
+    <br>
+    <br>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+    <ul>
+        <li v-for="p in personajes">
+    
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 md:p-5 dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">
+                Nombre: {{ p.name }}
+            </h3>
+            <p class="mt-1 text-xs font-medium uppercase text-gray-500 dark:text-gray-500">
+                Numero: {{ p.id }}
+            </p>
+            <br>
+            <img class="rounded-t-lg" src="https://rickandmortyapi.com/api/character/avatar/2.jpeg">
+            <br>
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Status: {{ p.status }}
+            </p>
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Especie: {{ p.species }}
+            </p>
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Tipo:  {{ p.type }}
+            </p>
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Género: {{ p.gender }}
+            </p>
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Visto por primera vez en: {{ p.origin.name }}
+            </p>          
+            <p class="mt-2 text-gray-800 dark:text-gray-400">
+                Visto por última vez en: {{ p.location.name }}
+            </p>   
+            </div>
+            <br>
+        </li>
+    </ul>
+</template>
